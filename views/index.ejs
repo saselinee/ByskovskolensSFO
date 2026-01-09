@@ -1,2 +1,91 @@
 <h1>Velkommen til Byskovskolens SFO</h1>
-<p>Dette er forsiden. Indhold kommer senere.</p>
+
+<section>
+    <h2>Nyheder</h2>
+
+    <% if (!newsItems || newsItems.length === 0) { %>
+        <p>Der er endnu ingen nyheder.</p>
+    <% } else { %>
+        <ul>
+            <% newsItems.forEach(function(item) { %>
+                <li style="margin-bottom: 24px;">
+                    <h3><%= item.title %></h3>
+
+                    <% if (item.formattedDate) { %>
+                        <p><small><%= item.formattedDate %></small></p>
+                    <% } %>
+
+                    <p><%= item.content %></p>
+
+                    <% if (item.imageUrl) { %>
+                        <p>
+                            <img src="<%= item.imageUrl %>" alt="Billede til nyhed" style="max-width: 300px;">
+                        </p>
+                    <% } %>
+
+                    <% if (session && session.userId && (session.role === "admin" || session.role === "superadmin")) { %>
+                        <details style="margin-top: 10px;">
+                            <summary>Rediger nyhed</summary>
+
+                            <form method="post" action="/news/<%= item._id %>/edit">
+                                <div>
+                                    <label>Titel</label><br>
+                                    <input name="title" value="<%= item.title %>" required>
+                                </div>
+
+                                <div style="margin-top: 8px;">
+                                    <label>Indhold</label><br>
+                                    <textarea name="content" rows="4" required><%= item.content %></textarea>
+                                </div>
+
+                                <div style="margin-top: 8px;">
+                                    <label>Billede URL (valgfri)</label><br>
+                                    <input name="imageUrl" value="<%= item.imageUrl || '' %>">
+                                </div>
+
+                                <div style="margin-top: 8px;">
+                                    <button type="submit">Gem ændringer</button>
+                                </div>
+                            </form>
+                        </details>
+
+                        <form method="post" action="/news/<%= item._id %>/delete" style="margin-top: 8px;">
+                            <button type="submit" onclick="return confirm('Er du sikker på at du vil slette nyheden?')">
+                                Slet nyhed
+                            </button>
+                        </form>
+                    <% } %>
+                </li>
+            <% }); %>
+        </ul>
+    <% } %>
+</section>
+
+<% if (session && session.userId && (session.role === "admin" || session.role === "superadmin")) { %>
+    <hr>
+
+    <section>
+        <h2>Opret nyhed (kun admin)</h2>
+
+        <form method="post" action="/news">
+            <div>
+                <label>Titel</label><br>
+                <input name="title" required>
+            </div>
+
+            <div style="margin-top: 8px;">
+                <label>Indhold</label><br>
+                <textarea name="content" rows="4" required></textarea>
+            </div>
+
+            <div style="margin-top: 8px;">
+                <label>Billede URL (valgfri)</label><br>
+                <input name="imageUrl">
+            </div>
+
+            <div style="margin-top: 8px;">
+                <button type="submit">Opret</button>
+            </div>
+        </form>
+    </section>
+<% } %>

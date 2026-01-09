@@ -1,9 +1,9 @@
 const News = require("../models/News");
 
-// Offentlig: hent nyheder (JSON)
+// Offentlig: hent nyheder (JSON - kan beholdes til test, men ikke nødvendig)
 exports.listNews = async (req, res) => {
     try {
-        const items = await News.find().sort({ date: -1 });
+        const items = await News.find().sort({ date: -1 }).lean();
         res.json(items);
     } catch (err) {
         console.error("Fejl ved hentning af nyheder:", err);
@@ -11,7 +11,7 @@ exports.listNews = async (req, res) => {
     }
 };
 
-// Admin: opret nyhed
+// Admin: opret nyhed (HTML form -> redirect tilbage)
 exports.createNews = async (req, res) => {
     try {
         const { title, content, imageUrl } = req.body;
@@ -20,21 +20,22 @@ exports.createNews = async (req, res) => {
             return res.status(400).send("Titel og indhold er påkrævet");
         }
 
-        const created = await News.create({
+        await News.create({
             title,
             content,
             imageUrl: imageUrl || "",
-            createdBy: req.session.role, // kan ændres senere til username
+            createdBy: req.session.role,
         });
 
-        res.json({ message: "Nyhed oprettet", news: created });
+        // Efter oprettelse: tilbage til forsiden
+        return res.redirect("/");
     } catch (err) {
         console.error("Fejl ved oprettelse af nyhed:", err);
-        res.status(500).send("Kunne ikke oprette nyhed");
+        return res.status(500).send("Kunne ikke oprette nyhed");
     }
 };
 
-// Admin: rediger nyhed
+// Admin: rediger nyhed (HTML form -> redirect tilbage)
 exports.updateNews = async (req, res) => {
     try {
         const { id } = req.params;
@@ -50,14 +51,15 @@ exports.updateNews = async (req, res) => {
             return res.status(404).send("Nyhed ikke fundet");
         }
 
-        res.json({ message: "Nyhed opdateret", news: updated });
+        // Efter redigering: tilbage til forsiden
+        return res.redirect("/");
     } catch (err) {
         console.error("Fejl ved opdatering af nyhed:", err);
-        res.status(500).send("Kunne ikke opdatere nyhed");
+        return res.status(500).send("Kunne ikke opdatere nyhed");
     }
 };
 
-// Admin: slet nyhed
+// Admin: slet nyhed (HTML form -> redirect tilbage)
 exports.deleteNews = async (req, res) => {
     try {
         const { id } = req.params;
@@ -67,9 +69,10 @@ exports.deleteNews = async (req, res) => {
             return res.status(404).send("Nyhed ikke fundet");
         }
 
-        res.json({ message: "Nyhed slettet" });
+        // Efter sletning: tilbage til forsiden
+        return res.redirect("/");
     } catch (err) {
         console.error("Fejl ved sletning af nyhed:", err);
-        res.status(500).send("Kunne ikke slette nyhed");
+        return res.status(500).send("Kunne ikke slette nyhed");
     }
 };

@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/", (req, res) => res.render("index", { title: "Forside" }));
-router.get("/about", (req, res) => res.render("about", { title: "Om SFO'en" }));
-router.get("/employees", (req, res) => res.render("employees", { title: "Medarbejdere" }));
+const pageController = require("../controllers/pageController");
+
+router.get("/", pageController.home);
+router.get("/about", pageController.about);
+router.get("/employees", pageController.employees);
 
 module.exports = router;
