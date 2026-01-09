@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Login</title>
+<h1>Admin login</h1>
+<form method="post" action="/adminLogin">
+    <label for="username">Brugernavn</label>
+    <input id="username" name="username" type="text" required>
 
-</head>
-<body>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" required>
 
-<h1>Velkommen til Admin login</h1>
-<p>Her kan personale logge ind.</p>
-
-</body>
-</html>
+    <button type="submit">Log ind</button>
+</form>

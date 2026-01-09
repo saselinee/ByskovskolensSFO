@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title><%= typeof title !== "undefined" ? title : "Byskovskolens SFO" %></title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/styling.css" />
+</head>
+<body>
+
+<!-- Fælles navbar -->
+<%- include("partials/navbar") %>
+
+<!-- Sideindhold bliver indsat her -->
+<main>
+    <%- body %>
+</main>
+
+<!-- JS (til navbar interaktivitet senere) -->
+<script src="/js/navbar.js"></script>
+</body>
+</html>
