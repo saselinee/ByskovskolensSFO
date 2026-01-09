@@ -1,0 +1,80 @@
+<h1>Administration af admins</h1>
+
+<% if (error) { %>
+    <p style="padding: 10px; border: 1px solid #c00;">
+        <strong>Fejl:</strong> <%= error %>
+    </p>
+<% } %>
+
+<% if (success) { %>
+    <p style="padding: 10px; border: 1px solid #0a0;">
+        <strong>OK:</strong> <%= success %>
+    </p>
+<% } %>
+
+<section>
+    <h2>Opret ny admin</h2>
+
+    <form method="post" action="/superadmin/admins/create">
+        <div>
+            <label>Brugernavn</label><br>
+            <input name="username" required>
+        </div>
+
+        <div style="margin-top: 8px;">
+            <label>Password</label><br>
+            <input name="password" type="password" required>
+        </div>
+
+        <div style="margin-top: 8px;">
+            <label>Fornavn</label><br>
+            <input name="firstName" required>
+        </div>
+
+        <div style="margin-top: 8px;">
+            <label>Efternavn</label><br>
+            <input name="lastName" required>
+        </div>
+
+        <div style="margin-top: 8px;">
+            <label>Fødselsdato</label><br>
+            <!-- min/max kommer fra controlleren -->
+            <input name="birthDate" type="date" min="<%= minBirthDate %>" max="<%= maxBirthDate %>" required>
+            <p><small>Du kan kun vælge en fødselsdato, der giver en alder mellem 15 og 70 år.</small></p>
+        </div>
+
+        <div style="margin-top: 12px;">
+            <button type="submit">Opret admin</button>
+        </div>
+    </form>
+</section>
+
+<hr>
+
+<section>
+    <h2>Eksisterende admins</h2>
+
+    <% if (!admins || admins.length === 0) { %>
+        <p>Der er ingen admins.</p>
+    <% } else { %>
+        <ul>
+            <% admins.forEach(admin => { %>
+                <li style="margin-bottom: 8px;">
+                    <strong><%= admin.firstName %> <%= admin.lastName %></strong>
+                    (<%= admin.username %>)
+                    <% if (!admin.active) { %>
+                        – <em>Deaktiveret</em>
+                    <% } %>
+
+                    <% if (admin.active) { %>
+                        <form method="post" action="/superadmin/admins/<%= admin._id %>/deactivate" style="display:inline;">
+                            <button type="submit" onclick="return confirm('Er du sikker på at du vil deaktivere denne admin?')">
+                                Deaktivér
+                            </button>
+                        </form>
+                    <% } %>
+                </li>
+            <% }) %>
+        </ul>
+    <% } %>
+</section>

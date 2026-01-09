@@ -11,19 +11,30 @@
                 <li style="margin-bottom: 24px;">
                     <h3><%= item.title %></h3>
 
-                    <% if (item.formattedDate) { %>
-                        <p><small><%= item.formattedDate %></small></p>
-                    <% } %>
+                    <p>
+                        <small>
+                            Oprettet: <%= item.formattedCreatedAt %>
+                            <% if (item.formattedUpdatedAt) { %>
+                                <br>
+                                Redigeret: <%= item.formattedUpdatedAt %>
+                            <% } %>
+                        </small>
+                    </p>
 
                     <p><%= item.content %></p>
 
                     <% if (item.imageUrl) { %>
                         <p>
-                            <img src="<%= item.imageUrl %>" alt="Billede til nyhed" style="max-width: 300px;">
+                            <img
+                                    src="<%= item.imageUrl %>"
+                                    alt="Billede til nyhed"
+                                    style="max-width: 300px;"
+                            >
                         </p>
                     <% } %>
 
                     <% if (session && session.userId && (session.role === "admin" || session.role === "superadmin")) { %>
+
                         <details style="margin-top: 10px;">
                             <summary>Rediger nyhed</summary>
 
@@ -49,11 +60,19 @@
                             </form>
                         </details>
 
-                        <form method="post" action="/news/<%= item._id %>/delete" style="margin-top: 8px;">
-                            <button type="submit" onclick="return confirm('Er du sikker på at du vil slette nyheden?')">
+                        <form
+                                method="post"
+                                action="/news/<%= item._id %>/delete"
+                                style="margin-top: 8px;"
+                        >
+                            <button
+                                    type="submit"
+                                    onclick="return confirm('Er du sikker på at du vil slette nyheden?')"
+                            >
                                 Slet nyhed
                             </button>
                         </form>
+
                     <% } %>
                 </li>
             <% }); %>
