@@ -4,6 +4,18 @@
     </div>
 
     <div class="navbar-right">
-        <a href="/adminLogin" class="admin-login">Admin</a>
+        <% if (session && session.userId) { %>
+            <span class="admin-login">Logget ind: <%= session.role %></span>
+
+            <form method="post" action="/logout" style="display:inline;">
+                <button type="submit">Log ud</button>
+            </form>
+
+            <% if (session.role === "superadmin") { %>
+                <a href="/superadmin/admins">Superadmin</a>
+            <% } %>
+        <% } else { %>
+            <a href="/adminLogin" class="admin-login">Admin</a>
+        <% } %>
     </div>
 </nav>
