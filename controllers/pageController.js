@@ -1,9 +1,9 @@
 const News = require("../models/News");
+const { logError } = require("../utils/logger");
 
 // Forside: hent nyheder og render index.ejs
 exports.home = async (req, res) => {
     try {
-        // Sortér efter oprettelsestidspunkt (nyeste først)
         const items = await News.find().sort({ createdAt: -1 }).lean();
 
         const newsItems = items.map((item) => {
@@ -24,9 +24,7 @@ exports.home = async (req, res) => {
             return {
                 ...item,
                 formattedCreatedAt: createdAt,
-                // Vis kun "Redigeret", hvis tidspunktet er anderledes end oprettet
-                formattedUpdatedAt:
-                    updatedAt && updatedAt !== createdAt ? updatedAt : null,
+                formattedUpdatedAt: updatedAt && updatedAt !== createdAt ? updatedAt : null,
             };
         });
 
@@ -35,13 +33,10 @@ exports.home = async (req, res) => {
             newsItems,
         });
     } catch (err) {
-        console.error("FEJL i pageController.home:", err);
+        logError("FEJL i pageController.home", err);
         return res.status(500).send("Kunne ikke indlæse forsiden.");
     }
 };
 
-exports.about = (req, res) =>
-    res.render("about", { title: "Om SFO'en" });
-
-exports.employees = (req, res) =>
-    res.render("employees", { title: "Medarbejdere" });
+exports.about = (req, res) => res.render("about", { title: "Om SFO'en" });
+exports.employees = (req, res) => res.render("employees", { title: "Medarbejdere" });
