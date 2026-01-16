@@ -38,6 +38,7 @@ app.use(
 // Gør session tilgængelig i EJS (fx til navbar)
 app.use((req, res, next) => {
     res.locals.session = req.session;
+    res.locals.currentPath = req.path;
     next();
 });
 

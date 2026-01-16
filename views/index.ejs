@@ -1,110 +1,138 @@
-<h1>Velkommen til Byskovskolens SFO</h1>
+<section class="front-hero">
+    <div class="front-hero-left">
+        <h1>Velkommen til Byskovskolens SFO</h1>
+        <p>
+            Her kan I finde nyheder, billeder og vigtig information om hverdagen i SFO’en.
+            Siden opdateres løbende af personalet.
+        </p>
 
-<section>
-    <h2>Nyheder</h2>
+        <div class="front-logo-wrap">
+            <img
+                    class="front-logo"
+                    src="/images/byskovskolenUdviddetLogo.png"
+                    alt="Byskovskolens SFO logo"
+            >
+        </div>
+    </div>
 
-    <% if (!newsItems || newsItems.length === 0) { %>
-        <p>Der er endnu ingen nyheder.</p>
-    <% } else { %>
-        <ul>
-            <% newsItems.forEach(function(item) { %>
-                <li style="margin-bottom: 24px;">
-                    <h3><%= item.title %></h3>
-
-                    <p>
-                        <small>
-                            Oprettet: <%= item.formattedCreatedAt %>
-                            <% if (item.formattedUpdatedAt) { %>
-                                <br>
-                                Redigeret: <%= item.formattedUpdatedAt %>
-                            <% } %>
-                        </small>
-                    </p>
-
-                    <p><%= item.content %></p>
-
-                    <% if (item.imageUrl) { %>
-                        <p>
-                            <img
-                                    src="<%= item.imageUrl %>"
-                                    alt="Billede til nyhed"
-                                    style="max-width: 300px;"
-                            >
-                        </p>
-                    <% } %>
-
-                    <% if (session && session.userId && (session.role === "admin" || session.role === "superadmin")) { %>
-
-                        <details style="margin-top: 10px;">
-                            <summary>Rediger nyhed</summary>
-
-                            <form method="post" action="/news/<%= item._id %>/edit">
-                                <div>
-                                    <label>Titel</label><br>
-                                    <input name="title" value="<%= item.title %>" required>
-                                </div>
-
-                                <div style="margin-top: 8px;">
-                                    <label>Indhold</label><br>
-                                    <textarea name="content" rows="4" required><%= item.content %></textarea>
-                                </div>
-
-                                <div style="margin-top: 8px;">
-                                    <label>Billede URL (valgfri)</label><br>
-                                    <input name="imageUrl" value="<%= item.imageUrl || '' %>">
-                                </div>
-
-                                <div style="margin-top: 8px;">
-                                    <button type="submit">Gem ændringer</button>
-                                </div>
-                            </form>
-                        </details>
-
-                        <form
-                                method="post"
-                                action="/news/<%= item._id %>/delete"
-                                style="margin-top: 8px;"
-                        >
-                            <button
-                                    type="submit"
-                                    onclick="return confirm('Er du sikker på at du vil slette nyheden?')"
-                            >
-                                Slet nyhed
-                            </button>
-                        </form>
-
-                    <% } %>
-                </li>
-            <% }); %>
-        </ul>
-    <% } %>
+    <div class="front-hero-right">
+        <div class="front-image-grid">
+            <img src="/images/sfo_1.jpg" alt="Billede fra SFO'en">
+            <img src="/images/sfo_2.jpg" alt="Billede fra SFO'en">
+            <img src="/images/sfo_3.jpg" alt="Billede fra SFO'en">
+            <img src="/images/sfo_4.jpg" alt="Billede fra SFO'en">
+        </div>
+    </div>
 </section>
 
-<% if (session && session.userId && (session.role === "admin" || session.role === "superadmin")) { %>
-    <hr>
+<section class="news-section">
+    <div class="news-header">
+        <h2>Nyheder</h2>
+        <p class="news-subtitle">Seneste opslag fra SFO’en</p>
+    </div>
 
-    <section>
-        <h2>Opret nyhed (kun admin)</h2>
+    <% if (session && session.userId && (session.role === "admin" || session.role === "superadmin")) { %>
+        <section class="news-form-card">
+            <h3>Post en nyhed</h3>
 
-        <form method="post" action="/news">
-            <div>
-                <label>Titel</label><br>
-                <input name="title" required>
-            </div>
+            <form method="post" action="/news" class="news-form">
+                <div class="field">
+                    <label for="createTitle">Titel</label>
+                    <input id="createTitle" name="title" required>
+                </div>
 
-            <div style="margin-top: 8px;">
-                <label>Indhold</label><br>
-                <textarea name="content" rows="4" required></textarea>
-            </div>
+                <div class="field">
+                    <label for="createContent">Indhold</label>
+                    <textarea id="createContent" name="content" rows="4" required></textarea>
+                </div>
 
-            <div style="margin-top: 8px;">
-                <label>Billede URL (valgfri)</label><br>
-                <input name="imageUrl">
-            </div>
+                <div class="field">
+                    <label for="createImageUrl">Billede URL (valgfri)</label>
+                    <input id="createImageUrl" name="imageUrl" placeholder="https://...">
+                </div>
 
-            <div style="margin-top: 8px;">
-                <button type="submit">Opret</button>
-            </div>
-        </form>
+                <div class="actions">
+                    <button class="btn" type="submit">Opret</button>
+                </div>
+            </form>
+        </section>
+    <% } %>
+
+    <section class="news-wall">
+        <% if (!newsItems || newsItems.length === 0) { %>
+            <article class="news-card">
+                <div class="news-card-title">
+                    <strong>Der er endnu ingen nyheder</strong>
+                </div>
+                <div class="news-card-body">
+                    Når personalet laver det første opslag, vil det blive vist her.
+                </div>
+            </article>
+        <% } else { %>
+            <% newsItems.forEach(function(item) { %>
+                <article class="news-card">
+                    <div class="news-card-title">
+                        <div class="news-title-row">
+                            <strong class="news-title"><%= item.title %></strong>
+                            <span class="news-time"><%= item.formattedCreatedAt || "" %></span>
+                        </div>
+
+                        <div class="news-meta">
+                            Oprettet af <%= item.createdBy %>
+                            <% if (item.updatedBy && item.formattedUpdatedAt) { %>
+                                · Redigeret <%= item.formattedUpdatedAt %> af <%= item.updatedBy %>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="news-card-body">
+                        <p class="news-content"><%= item.content %></p>
+
+                        <% if (item.imageUrl) { %>
+                            <img class="news-image" src="<%= item.imageUrl %>" alt="Billede til nyhed">
+                        <% } %>
+
+                        <% if (session && session.userId && (session.role === "admin" || session.role === "superadmin")) { %>
+                            <div class="news-admin-tools">
+                                <details>
+                                    <summary>Rediger</summary>
+
+                                    <form method="post" action="/news/<%= item._id %>/edit" class="news-edit-form">
+                                        <div class="field">
+                                            <label for="editTitle-<%= item._id %>">Titel</label>
+                                            <input id="editTitle-<%= item._id %>" name="title" value="<%= item.title %>" required>
+                                        </div>
+
+                                        <div class="field">
+                                            <label for="editContent-<%= item._id %>">Indhold</label>
+                                            <textarea id="editContent-<%= item._id %>" name="content" rows="4" required><%= item.content %></textarea>
+                                        </div>
+
+                                        <div class="field">
+                                            <label for="editImageUrl-<%= item._id %>">Billede URL (valgfri)</label>
+                                            <input id="editImageUrl-<%= item._id %>" name="imageUrl" value="<%= item.imageUrl || '' %>">
+                                        </div>
+
+                                        <div class="actions">
+                                            <button class="btn" type="submit">Gem ændringer</button>
+                                        </div>
+                                    </form>
+                                </details>
+
+                                <form method="post" action="/news/<%= item._id %>/delete" class="delete-form">
+                                    <button
+                                            class="btn btn-danger"
+                                            type="submit"
+                                            onclick="return confirm('Er du sikker på at du vil slette nyheden?')"
+                                    >
+                                        Slet
+                                    </button>
+                                </form>
+                            </div>
+                        <% } %>
+                    </div>
+                </article>
+            <% }); %>
+        <% } %>
     </section>
-<% } %>
+</section>

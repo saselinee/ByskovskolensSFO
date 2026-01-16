@@ -10,10 +10,7 @@ function requireLogin(req, res, next) {
 
 // Skal være admin eller superadmin
 function requireAdmin(req, res, next) {
-    if (!req.session.userId) {
-        return res.status(401).send("Du er ikke logget ind");
-    }
-    if (req.session.role !== "admin" && req.session.role !== "superadmin") {
+    if (!["admin", "superadmin"].includes(req.session.role)) {
         return res.status(403).send("Adgang nægtet");
     }
     next();
@@ -21,9 +18,6 @@ function requireAdmin(req, res, next) {
 
 // Skal være superadmin
 function requireSuperAdmin(req, res, next) {
-    if (!req.session.userId) {
-        return res.status(401).send("Du er ikke logget ind");
-    }
     if (req.session.role !== "superadmin") {
         return res.status(403).send("Kun superadmin har adgang");
     }

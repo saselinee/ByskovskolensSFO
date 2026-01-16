@@ -1,2 +1,57 @@
-<h1>Medarbejdere</h1>
-<p>Her kommer medarbejderliste senere.</p>
+<section class="employees-page">
+    <header class="employees-header">
+        <h1>Medarbejdere</h1>
+        <p>Mød personalet i Byskovskolens SFO</p>
+    </header>
+
+    <% const hasEmployees = employees && employees.length > 0; %>
+
+    <% if (!hasEmployees) { %>
+        <div class="employees-empty">
+            <p>Der er ingen medarbejdere at vise endnu.</p>
+        </div>
+    <% } else { %>
+        <section class="employees-grid" aria-label="Liste over medarbejdere">
+            <% employees.forEach(function(emp, index) { %>
+                <%
+                    const name = (emp && emp.fullName && emp.fullName.trim()) ? emp.fullName.trim() : "Medarbejder";
+                    const roleLabel = emp.role === "superadmin" ? "Leder" : "Medarbejder";
+                    const birthdayText = emp.birthdayText || "";
+                    const showBirthday = Boolean(birthdayText);
+                    const cardClass = emp.isBirthday ? "employee-card birthday" : "employee-card";
+                    const imgAlt = "Billede af " + name;
+                %>
+
+                <article class="<%= cardClass %>">
+                    <div class="employee-photo-wrap">
+                        <img
+                                class="employee-photo"
+                                src="<%= emp.imageUrl %>"
+                                alt="<%= imgAlt %>"
+                                loading="lazy"
+                        >
+                    </div>
+
+                    <div class="employee-info">
+                        <div class="employee-top">
+                            <h3 class="employee-name"><%= name %></h3>
+                            <span class="employee-role"><%= roleLabel %></span>
+                        </div>
+
+                        <% if (showBirthday) { %>
+                            <div class="employee-birthday">
+                                <span>Fødselsdag: <%= birthdayText %></span>
+
+                                <% if (emp.isBirthday) { %>
+                                    <span class="birthday-badge" aria-label="Har fødselsdag i dag">
+                                        Har fødselsdag i dag
+                                    </span>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </article>
+            <% }); %>
+        </section>
+    <% } %>
+</section>

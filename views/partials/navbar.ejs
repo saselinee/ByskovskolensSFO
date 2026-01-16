@@ -1,21 +1,36 @@
 <nav class="navbar">
     <div class="navbar-left">
-        <span class="navbar-title">Byskovskolen's SFO</span>
+        <a href="/" class="navbar-brand">
+            <img class="navbar-logo" src="/images/byskovskolenLogo.png" alt="Byskovskolen logo">
+            <span class="navbar-title">Byskovskolens SFO</span>
+        </a>
+    </div>
+
+    <div class="navbar-center">
+        <a href="/" class="nav-link <%= currentPath === '/' ? 'active' : '' %>">Forside</a>
+        <a href="/about" class="nav-link <%= currentPath === '/about' ? 'active' : '' %>">Om os</a>
+        <a href="/employees" class="nav-link <%= currentPath === '/employees' ? 'active' : '' %>">Medarbejdere</a>
     </div>
 
     <div class="navbar-right">
-        <% if (session && session.userId) { %>
-            <span class="admin-login">Logget ind: <%= session.role %></span>
 
-            <form method="post" action="/logout" style="display:inline;">
-                <button type="submit">Log ud</button>
-            </form>
+
+        <% if (session && session.userId) { %>
+            <span class="admin-login">
+                Logget ind: <%= session.fullName || session.username || session.role %>
+            </span>
 
             <% if (session.role === "superadmin") { %>
-                <a href="/superadmin/admins">Superadmin</a>
+                <a href="/superadmin/admins" class="btn btn-outline <%= currentPath.startsWith('/superadmin') ? 'active' : '' %>">
+                    Superadmin
+                </a>
             <% } %>
+
+            <form method="post" action="/logout" style="display:inline;">
+                <button class="btn btn-outline" type="submit">Log ud</button>
+            </form>
         <% } else { %>
-            <a href="/adminLogin" class="admin-login">Admin</a>
+            <a href="/adminLogin" class="admin-link <%= currentPath === '/adminLogin' ? 'active' : '' %>">For Personale</a>
         <% } %>
     </div>
 </nav>

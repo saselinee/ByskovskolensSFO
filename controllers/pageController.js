@@ -1,5 +1,23 @@
 const News = require("../models/News");
+const User = require("../models/User");
 const { logError } = require("../utils/logger");
+
+// Hjælpefunktion: format fødselsdag uden årstal (fx "13. januar")
+function formatBirthdayDa(date) {
+    if (!date) return "";
+    return new Date(date).toLocaleDateString("da-DK", {
+        day: "2-digit",
+        month: "long",
+    });
+}
+
+// Hjælpefunktion: check om fødselsdag er i dag (samme dag + måned)
+function isBirthdayToday(date) {
+    if (!date) return false;
+    const d = new Date(date);
+    const today = new Date();
+    return d.getDate() === today.getDate() && d.getMonth() === today.getMonth();
+}
 
 // Forside: hent nyheder og render index.ejs
 exports.home = async (req, res) => {
@@ -39,4 +57,42 @@ exports.home = async (req, res) => {
 };
 
 exports.about = (req, res) => res.render("about", { title: "Om SFO'en" });
-exports.employees = (req, res) => res.render("employees", { title: "Medarbejdere" });
+
+// Medarbejdere: hent aktive admins + superadmins og render employees.ejs
+exports.employees = async (req, res) => {
+    try {
+        const users = await User.find({
+            active: true,
+            role: { $in: ["admin", "superadmin"] },
+        })
+            .sort({ role: 1, lastName: 1, firstName: 1 })
+            .lean();
+
+        const employees = users.map((u) => {
+            const fullName = `${u.firstName || ""} ${u.lastName || ""}`.trim();
+
+            // Hvis du ikke har imageUrl i din User model endnu, vil dette bare blive undefined,
+            // og så falder den tilbage til placeholder.
+            const imageUrl =
+                u.imageUrl && String(u.imageUrl).trim()
+                    ? String(u.imageUrl).trim()
+                    : "/images/employee-placeholder.png";
+
+            return {
+                fullName,
+                role: u.role,
+                birthdayText: formatBirthdayDa(u.birthDate),
+                isBirthday: isBirthdayToday(u.birthDate),
+                imageUrl,
+            };
+        });
+
+        return res.render("employees", {
+            title: "Medarbejdere",
+            employees,
+        });
+    } catch (err) {
+        logError("FEJL i pageController.employees", err);
+        return res.status(500).send("Kunne ikke indlæse medarbejdere.");
+    }
+};

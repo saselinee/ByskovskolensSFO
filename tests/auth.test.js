@@ -35,7 +35,7 @@ describe("Auth: login", () => {
             .post("/adminLogin")
             .send({ username: "testadmin", password: "test1234" });
 
-        // Du redirecter ved succes
+        // Redirecter ved succes
         expect(res.statusCode).toBe(302);
         expect(res.headers.location).toBe("/");
     });
